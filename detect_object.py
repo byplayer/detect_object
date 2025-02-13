@@ -19,6 +19,7 @@ def init_logger():
 
 def process_videos_in_directory(directory_path, destination_dir_path,
                                 object_name, model, logger):
+    logger.info(f"check video in {directory_path}")
     os.makedirs(destination_dir_path, exist_ok=True)
     for root, dirs, files in os.walk(directory_path):
         for file in files:
@@ -37,6 +38,8 @@ def process_videos_in_directory(directory_path, destination_dir_path,
 
                     front_file_path = os.path.join(
                         root, file.replace('_R.MP4', '_F.MP4'))
+                    front_file_path = front_file_path.replace(
+                        '_r.mp4', '_f.mp4')
                     new_file_name = lower_name.replace('_r.mp4', '_f.mp4')
 
                     dest_path = os.path.join(
@@ -67,8 +70,11 @@ def detect_object_in_video(video_path, object_name, model, logger):
         for box, cls_idx, conf in zip(boxes.xyxy, boxes.cls, boxes.conf):
             class_name = results[0].names[cls_idx.item()]
             if class_name == object_name:
-                object_detected = True
-                break
+                width = box[2].item() - box[0].item()
+                height = box[3].item() - box[1].item()
+                if width >= 200 or height >= 200:
+                    object_detected = True
+                    break
 
         if object_detected:
             break
