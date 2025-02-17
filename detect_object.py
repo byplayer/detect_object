@@ -72,7 +72,7 @@ def detect_object_in_video(video_path, object_name, model, logger):
             if class_name == object_name:
                 width = box[2].item() - box[0].item()
                 height = box[3].item() - box[1].item()
-                if width >= 200 or height >= 200:
+                if width >= 300 or height >= 300:
                     object_detected = True
                     break
 
